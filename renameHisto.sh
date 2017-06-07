@@ -1,6 +1,5 @@
 cd HistoFiles
-dir = pwd
-echo dir
+echo $PWD
 
 ### Central
 
