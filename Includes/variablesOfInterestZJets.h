@@ -147,6 +147,28 @@ const variableStruct VAROFINTERESTZJETS[] = {
     {"dRptmin100LepCloseJetCo300dR04_Zinc1jet",         1,      1,           3,              3,             3,            3 ,               3    }, // 1
     {"dRptmin100LepCloseDiJetCo300dR04_Zinc2jet",         1,      1,           3,              3,             3,            3 ,               3    }, // 1
 
+//andrew
+    {"LeadingJetPt_Zinc1jet_R21",         1,      1,          9,              4,             7,            3 ,               3    },// 1
+    {"LeadingJetPt_Zinc2jet_R21",         1,      1,          1,              4,             1,            1 ,               1    },// 1
+    {"LeadingJetPt_Zinc2jet_R32",         1,      1,          1,              4,             1,            1 ,               1    },// 1
+    {"LeadingJetPt_Zinc3jet_R32",         1,      1,          1,              4,             1,            1 ,               1    },// 1
+    {"LeadingJetPt_Zinc3jet_R43",         1,      1,          1,              4,             1,            1 ,               1    },// 1
+    {"LeadingJetPt_Zinc4jet_R43",         1,      1,          1,              4,             1,            1 ,               1    },// 1
+    {"LeadingJetPt_Zexc1jet_R21",         1,      1,          1,              4,             1,            1 ,               1    },// 1
+    {"LeadingJetPt_Zexc2jet_R21",         1,      1,          1,              4,             1,            1 ,               1    },// 1
+    {"LeadingJetPt_Zexc2jet_R32",         1,      1,          1,              4,             1,            1 ,               1    },// 1
+    {"LeadingJetPt_Zexc3jet_R32",         1,      1,          1,              4,             1,            1 ,               1    },// 1
+    {"LeadingJetPt_Zexc3jet_R43",         1,      1,          1,              4,             1,            1 ,               1    },// 1
+    {"LeadingJetPt_Zexc4jet_R43",         1,      1,          1,              4,             1,            1 ,               1    },// 1
+    {"HTover2_Zinc2jet_R32",         1,      1,          1,              4,             1,            1 ,               1    },// 1
+    {"HTover2_Zinc3jet_R32",         1,      1,          1,              4,             1,            1 ,               1    },// 1
+    {"HTover2_Zinc3jet_R43",         1,      1,          1,              4,             1,            1 ,               1    },// 1
+    {"HTover2_Zinc4jet_R43",         1,      1,          1,              4,             1,            1 ,               1    },// 1
+    {"HTover2_Zexc2jet_R32",         1,      1,          1,              4,             1,            1 ,               1    },// 1
+    {"HTover2_Zexc3jet_R32",         1,      1,          1,              4,             1,            1 ,               1    },// 1
+    {"HTover2_Zexc3jet_R43",         1,      1,          1,              4,             1,            1 ,               1    },// 1
+    {"HTover2_Zexc4jet_R43",         1,      1,          1,              4,             1,            1 ,               1    },// 1
+
 }; 
 
 const unsigned int NVAROFINTERESTZJETS = sizeof(VAROFINTERESTZJETS)/sizeof(VAROFINTERESTZJETS[0]);

@@ -576,18 +576,32 @@ void configXaxis(TH1D *grCentralSyst, TH1D *gen1, TString variable)
     TString xtitle = gen1->GetXaxis()->GetTitle();
     if (xtitle.Index("^{gen}") >= 0) xtitle = xtitle.ReplaceAll("^{gen}","");
     if (xtitle.Index("H_{T}") >= 0) {
-        TString njets;
-        if (variable.Index("Zinc1jet") >= 0) njets = "1";
-        else if (variable.Index("Zinc2jet") >= 0) njets = "2";
-        else if (variable.Index("Zinc3jet") >= 0) njets = "3";
-        else if (variable.Index("Zinc4jet") >= 0) njets = "4";
-        else if (variable.Index("Zinc5jet") >= 0) njets = "5";
-        else if (variable.Index("Zinc6jet") >= 0) njets = "6";
-        else if (variable.Index("Zinc7jet") >= 0) njets = "7";
-        else if (variable.Index("Zinc8jet") >= 0) njets = "8";
-        //xtitle = "H_{T}, N_{jets} #geq " + njets + " [GeV]";
-        xtitle = "H_{T} [GeV]";
+        TString njets; 
+        if (variable.Index("1jet") >= 0) njets = "1";
+        else if (variable.Index("2jet") >= 0) njets = "2";
+        else if (variable.Index("3jet") >= 0) njets = "3";
+        else if (variable.Index("4jet") >= 0) njets = "4";
+        else if (variable.Index("5jet") >= 0) njets = "5";
+        else if (variable.Index("6jet") >= 0) njets = "6";
+        else if (variable.Index("7jet") >= 0) njets = "7";
+        else if (variable.Index("8jet") >= 0) njets = "8";
+        else if (variable.Index("1jet") >= 0) njets = "1";
+        else if (variable.Index("2jet") >= 0) njets = "2";
+        else if (variable.Index("3jet") >= 0) njets = "3";
+        else if (variable.Index("4jet") >= 0) njets = "4";
+        else if (variable.Index("5jet") >= 0) njets = "5";
+        else if (variable.Index("6jet") >= 0) njets = "6";
+        else if (variable.Index("7jet") >= 0) njets = "7";
+        else if (variable.Index("8jet") >= 0) njets = "8";
+        //andrew
+        if (xtitle.Index("H_{T}/2") >= 0) {
+            xtitle = "H_{T}/2, N_{jets} #geq " + njets + " [GeV]";
+        }
+        else {
+            xtitle = "H_{T}, N_{jets} #geq " + njets + " [GeV]";
+        }
     }
+
     grCentralSyst->GetXaxis()->SetTitle(xtitle);
     grCentralSyst->GetXaxis()->SetTitleSize(0.14);
     //-----------------------------------------
@@ -710,7 +724,8 @@ TCanvas* makeCrossSectionPlot(TString lepSel, TString variable, bool doNormalize
     TGraphAsymmErrors *grCentralSystRatio = createRatioGraph(grCentralSyst);
     TGraphAsymmErrors *grGen1ToCentral = createGenToCentral(hGen1, grCentralStat);
     TGraphAsymmErrors *grGen1PDFSyst = createPDFSystGraph(hPDFUp, hPDFDown, grGen1ToCentral); 
-    TGraphAsymmErrors *grGen1TotSyst = createTotSystGraphAMCNLO(lepSel, variable, grGen1ToCentral);
+//andrew    
+    //TGraphAsymmErrors *grGen1TotSyst = createTotSystGraphAMCNLO(lepSel, variable, grGen1ToCentral);
     TGraphAsymmErrors *grGen2ToCentral = NULL;
     TGraphAsymmErrors *grGen2PDFSyst = NULL;
     if (hGen2) {
@@ -732,6 +747,8 @@ TCanvas* makeCrossSectionPlot(TString lepSel, TString variable, bool doNormalize
     //--- Main Canvas ---
     double maximum = hGen1->GetMaximum();
     double minimum = hGen1->GetMinimum();
+    if (! minimum > 0) minimum = 1e-06;
+
     TString canvasName = "canvas" + variable;
     TCanvas *plots = new TCanvas(canvasName, hStat->GetTitle(), 600, 800);
     //-------------------
@@ -1002,13 +1019,15 @@ TCanvas* makeCrossSectionPlot(TString lepSel, TString variable, bool doNormalize
     configXaxis(hSyst, hGen1, variable);
     grGen1PDFSyst->SetFillStyle(1001);
     grGen1PDFSyst->SetFillColor(kBlue-6);
-    grGen1TotSyst->SetFillStyle(1001);
-    grGen1TotSyst->SetFillColor(kBlue-10);
+//andrew    
+    //grGen1TotSyst->SetFillStyle(1001);
+    //grGen1TotSyst->SetFillColor(kBlue-10);
     hSyst->DrawCopy("e");
     grGen1ToCentral->SetName("grGen1ToCentral");
     grGen1ToCentral->Draw("2");
     //grGen1PDFSyst->Draw("2");
-    grGen1TotSyst->Draw("2");
+//andrew    
+    //grGen1TotSyst->Draw("2");
     grCentralSystRatio->SetName("grCentralSystRatio");
     grCentralSystRatio->Draw("2");
     grCentralStatRatio->Draw("p");

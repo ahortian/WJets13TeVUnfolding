@@ -96,6 +96,7 @@ void UnfoldingZJets(TString lepSel, TString algo, TString histoDir, TString unfo
     double integratedLumi = 2239.351439352; 
     
     cout << " DYSHERPA14FILENAME " << DYSHERPA14FILENAME << endl;
+    cout << " DYMGPYTHIA8FILENAME " << DYMGPYTHIA8FILENAME << endl;
     TFile *fSheUnf = 0;
     TFile *fGen1 = NULL;
     TString gen1;
@@ -238,7 +239,6 @@ void UnfoldingZJets(TString lepSel, TString algo, TString histoDir, TString unfo
 //        //--- response DYJets objects ---
 //        RooUnfoldResponse *Fine_respDYJets[18] = {NULL};
 //        //===================================================
-        
         TH1D *hGen1 = NULL;
         TH1D *hGen2 = NULL;
         if (DYMGPYTHIA8FILENAME.Length() > 0 ){
@@ -368,20 +368,15 @@ void UnfoldingZJets(TString lepSel, TString algo, TString histoDir, TString unfo
 //          //---End: for calculating resp syst -------------------------------------------------------
       }
 
-      
       TH1D *hMadGenCrossSection = makeCrossSectionHist(hGenDYJets[0], integratedLumi);
       hMadGenCrossSection->SetZTitle("MG_aMC FxFx + PY8 (#leq 2j NLO + PS)");
-      TH1D *hGen1CrossSection = makeCrossSectionHist(hGen1, integratedLumi);
+    TH1D *hGen1CrossSection = makeCrossSectionHist(hGen1, integratedLumi);
       hGen1CrossSection->SetZTitle(generatorNames[gen1][1]);
-        TH1D *hGen2CrossSection;
-
+       TH1D *hGen2CrossSection;
         if (variable == "FirstJetPt_Zinc1jet" || variable == "JetsHT_Zinc1jet" || variable == "FirstJetAbsRapidity_Zinc1jet" || variable == "dRptmin100LepCloseJetCo300dR04_Zinc1jet" || variable == "dPhiLepJet1_Zinc1jet"){
             hGen2CrossSection = makeCrossSectionHist(hGen2, 0);
             hGen2CrossSection->SetZTitle(generatorNames[gen2][1]);
         }  //add nnlo here
-      
-
-        
 //        TH1D *genNNLO;
 //        vector<double> myVecNNLO;
 //        myVecNNLO = getNNLO1jxsec(variable);
@@ -434,7 +429,6 @@ void UnfoldingZJets(TString lepSel, TString algo, TString histoDir, TString unfo
       TH1D *hUnfData[18] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,};
       TH2D *hUnfDataStatCov[18] =  { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,};
       TH2D *hUnfMCStatCov[18] =  { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,};
-
       int nIter[18] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; 
       int svdKterm(0);
       //if (lepSel == "DMu")
@@ -447,17 +441,14 @@ void UnfoldingZJets(TString lepSel, TString algo, TString histoDir, TString unfo
 	cerr << "Aborting...\n";
 	return;
       }
-
       bool logy = VAROFINTERESTZJETS[i].log;
 
       int nSysts = DYSHERPA14FILENAME.Length()? 18 : 17;
       //int nSysts = DYSHERPA14FILENAME.Length()? 17 : 17;
-
       //--- Unfold the Data histograms for each systematic ---
       for (unsigned short iSyst = 0; iSyst < nSysts; ++iSyst) {
 
 	if(iSyst != 0 && whichSyst >= 0 && iSyst != whichSyst) continue;
-	
 	//--- only JES up and down (iSyst = 1 and 2) is applied on data ---
 	unsigned short iData = (iSyst == 1 || iSyst == 2) ? iSyst : 0;
 	unsigned short iBg = 0;
