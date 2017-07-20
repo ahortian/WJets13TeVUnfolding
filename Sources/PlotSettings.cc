@@ -789,23 +789,35 @@ TCanvas* makeCrossSectionPlot(TString lepSel, TString variable, bool doNormalize
     if (canvasName.Contains("JetPt_Zinc")) {
         hSyst->GetXaxis()->SetRangeUser(30, hSyst->GetXaxis()->GetXmax());
     }
-    if (canvasName.Contains("JetPt_Zinc1jet")) {
-        hSyst->GetXaxis()->SetRangeUser(30, 900);
-        hSyst->GetYaxis()->SetRangeUser(0.15*minimum, 1.0*maximum);
+  //  if (canvasName.Contains("JetPt_Zinc1jet")) {
+  //      hSyst->GetXaxis()->SetRangeUser(30, 900);
+  //      hSyst->GetYaxis()->SetRangeUser(0.15*minimum, 1.0*maximum);
+  if (canvasName.Contains("LeadingJetPt_Zinc1jet")){
+        hSyst->GetXaxis()->SetRangeUser(30,900);
+        hSyst->GetYaxis()->SetRangeUser(minimum, maximum);   
     }
-    if (canvasName.Contains("JetPt_Zinc2jet")) {
-        hSyst->GetXaxis()->SetRangeUser(30, 400);   ///??problematic to set upper range???
-       // hSyst->GetXaxis()->SetRangeUser(30, hSyst->GetXaxis()->GetXmax());
-        hSyst->GetYaxis()->SetRangeUser(0.15*minimum, 1.0*maximum);
+  //  if (canvasName.Contains("JetPt_Zinc2jet")) {
+  //      hSyst->GetXaxis()->SetRangeUser(30, 400);   ///??problematic to set upper range???
+  //     // hSyst->GetXaxis()->SetRangeUser(30, hSyst->GetXaxis()->GetXmax());
+  //      hSyst->GetYaxis()->SetRangeUser(0.15*minimum, 1.0*maximum);
+   if (canvasName.Contains("LeadingJetPt_Zinc2jet")){
+        hSyst->GetXaxis()->SetRangeUser(30,900);
+        hSyst->GetYaxis()->SetRangeUser(minimum, maximum);
     }
-    if (canvasName.Contains("JetPt_Zinc3jet")) {
-        hSyst->GetXaxis()->SetRangeUser(30, 300);
-        //hSyst->GetYaxis()->SetRangeUser(0.002, 10);
-        hSyst->GetYaxis()->SetRangeUser(0.15*minimum, 1.0*maximum);
+  //  if (canvasName.Contains("JetPt_Zinc3jet")) {
+  //      hSyst->GetXaxis()->SetRangeUser(30, 300);
+  //      //hSyst->GetYaxis()->SetRangeUser(0.002, 10);
+  //      hSyst->GetYaxis()->SetRangeUser(0.15*minimum, 1.0*maximum);
+  if (canvasName.Contains("LeadingJetPt_Zinc3jet")){
+        hSyst->GetXaxis()->SetRangeUser(30,900);
+        hSyst->GetYaxis()->SetRangeUser(minimum, maximum);
     }
-    if (canvasName.Contains("JetPt_Zinc4jet")) {
-        hSyst->GetXaxis()->SetRangeUser(30, 180);
-        hSyst->GetYaxis()->SetRangeUser(0.15*minimum, 1.0);
+  //  if (canvasName.Contains("JetPt_Zinc4jet")) {
+  //      hSyst->GetXaxis()->SetRangeUser(30, 180);
+  //      hSyst->GetYaxis()->SetRangeUser(0.15*minimum, 1.0);
+  if (canvasName.Contains("LeadingJetPt_Zinc4jet")){
+        hSyst->GetXaxis()->SetRangeUser(30,900);
+        hSyst->GetYaxis()->SetRangeUser(minimum, maximum);
     }
     if (canvasName.Contains("JetAbsRapidity_Zinc1jet")) {
         hSyst->GetYaxis()->SetRangeUser(0.2, 1.5*maximum);
