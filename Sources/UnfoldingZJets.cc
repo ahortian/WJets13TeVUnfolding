@@ -532,6 +532,18 @@ void UnfoldingZJets(TString lepSel, TString algo, TString histoDir, TString unfo
 	//--- save the unfolded histograms ---
 	//outputRootFile->cd();
 	//if(hUnfData[iSyst]) hUnfData[iSyst]->Write();
+	
+        //andrew
+        //save the hRecDataMinusFakes i.e. detector level histograms for building correlation matrix
+        //here we grab the "central" detec.-level histo
+        outputRootFile->cd();
+        if (hRecDataMinusFakes && iSyst == 0){
+        TString tempName = "DetecData"+name[iSyst];
+        TString tempTitle = variable;
+        tempTitle += "_detectorlevel";
+        hRecDataMinusFakes->SetNameTitle(tempName, tempTitle);
+        hRecDataMinusFakes->Write();
+        }
       }
       //----------------------------------------------------------------------------------------- 
 
@@ -641,6 +653,9 @@ void UnfoldingZJets(TString lepSel, TString algo, TString histoDir, TString unfo
       hGen1CrossSection->Write("hGen1DYJetsCrossSection");
       //hGen2CrossSection->Write("hGen2DYJetsCrossSection");
       respDYJets[0]->Write("respDYJetsCentral");
+      //andrew
+      hResDYJets[0]->Write("hResDYJetsCentral");
+
       for (int i = 0; i <= 11; ++i) {
           if(hCov[i]) hCov[i]->Write();
       }
@@ -1782,7 +1797,10 @@ void RemoveFakes(TH1* hRecData, TH1* hFakes, TH1* hPurity){
 }
 
 void plotRespMat(TH2D *hResp, TString variable, TString unfoldDir){
-    
+
+    //Generates a pdf of the TH2 response matrix used for creating the RooUnfoldResponse object that goes into unfolding   
+    //This TH2 is related to the hresponse histos   
+
     TString outputFileName = unfoldDir;
     outputFileName += "ResponseMatrix_" + variable;
     
@@ -1797,7 +1815,9 @@ void plotRespMat(TH2D *hResp, TString variable, TString unfoldDir){
     
     gStyle->SetOptStat(0);
     gStyle->SetPaintTextFormat("4.0f");
-    
+   
+    //andrew
+    gStyle->SetHistMinimumZero();   
     
     
     string YTitle = hNormResp->GetYaxis()->GetTitle();  YTitle = "gen " + YTitle;
@@ -1823,6 +1843,7 @@ void plotRespMat(TH2D *hResp, TString variable, TString unfoldDir){
     TCanvas *canRespMatrix = new TCanvas("s", "s", 600, 600);
     canRespMatrix->cd();
     
+
     TPad *pad1 = new TPad("a", "a", 0.05, 0.05, 0.95, 0.9);
     //    pad1->SetTopMargin(0.11);
     //    pad1->SetBottomMargin(0);
@@ -1838,9 +1859,10 @@ void plotRespMat(TH2D *hResp, TString variable, TString unfoldDir){
         pad1->SetLogx();
     }
     
+    pad1->cd();
     //hNormResp->SetContour(90);
     //    hNormResp->DrawCopy();
-    hNormResp->DrawCopy("colz");
+    hNormResp->DrawCopy("colz2");
     //hNormResp->DrawCopy("LEGO2Z 0");
     //hNormResp->DrawCopy("hist");
     hNormResp->DrawCopy("TEXT SAME");
