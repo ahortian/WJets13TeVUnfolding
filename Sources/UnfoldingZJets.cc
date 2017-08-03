@@ -368,6 +368,11 @@ void UnfoldingZJets(TString lepSel, TString algo, TString histoDir, TString unfo
 //          //---End: for calculating resp syst -------------------------------------------------------
       }
 
+      //andrew -- write out gen distributions before lumi scaling to get num of entries
+      outputRootFile->cd();
+      hGenDYJets[0]->Write("hMadGenDYJetsCrossSection_NoScale");
+      hGen1->Write("hGen1DYJetsCrossSection_NoScale");
+
       TH1D *hMadGenCrossSection = makeCrossSectionHist(hGenDYJets[0], integratedLumi);
       hMadGenCrossSection->SetZTitle("MG_aMC FxFx + PY8 (#leq 2j NLO + PS)");
     TH1D *hGen1CrossSection = makeCrossSectionHist(hGen1, integratedLumi);
@@ -534,14 +539,15 @@ void UnfoldingZJets(TString lepSel, TString algo, TString histoDir, TString unfo
 	//if(hUnfData[iSyst]) hUnfData[iSyst]->Write();
 	
         //andrew
-        //save the hRecDataMinusFakes i.e. detector level histograms for building correlation matrix
+        //save the hRecDataMinusFakes i.e. detector level histograms for building correlation matrix, before loop goes to next iSyst
         //here we grab the "central" detec.-level histo
         outputRootFile->cd();
+
         if (hRecDataMinusFakes && iSyst == 0){
-        TString tempName = "DetecData"+name[iSyst];
-        TString tempTitle = variable;
-        tempTitle += "_detectorlevel";
-        hRecDataMinusFakes->SetNameTitle(tempName, tempTitle);
+        TString detecName = "DetecData"+name[iSyst];
+        TString detecTitle = variable;
+        detecTitle += "_detectorlevel";
+        hRecDataMinusFakes->SetNameTitle(detecName, detecTitle);
         hRecDataMinusFakes->Write();
         }
       }
@@ -645,7 +651,10 @@ void UnfoldingZJets(TString lepSel, TString algo, TString histoDir, TString unfo
 
       //--- Save other things --- 
       outputRootFile->cd();
+
+      //andrew - reco data before BG subtraction and fakes removal
       hRecData[0]->Write("hRecDataCentral");
+      //andrew - sum of all BGs to be subtracted from reco data
       hRecSumBg[0]->Write("hRecSumBgCentral");
       hRecDYJets[0]->Write("hRecDYJetsCentral");
       hGenDYJets[0]->Write("hGenDYJetsCentral");
@@ -653,7 +662,7 @@ void UnfoldingZJets(TString lepSel, TString algo, TString histoDir, TString unfo
       hGen1CrossSection->Write("hGen1DYJetsCrossSection");
       //hGen2CrossSection->Write("hGen2DYJetsCrossSection");
       respDYJets[0]->Write("respDYJetsCentral");
-      //andrew
+      //andrew - hResDYJets is the TH2 used to form response objects respDYJets
       hResDYJets[0]->Write("hResDYJetsCentral");
 
       for (int i = 0; i <= 11; ++i) {
@@ -672,6 +681,8 @@ void UnfoldingZJets(TString lepSel, TString algo, TString histoDir, TString unfo
       pIntegratedLumi.Write();
       TParameter<int> pNIter("nIter", nIter[0]);
       pNIter.Write();
+
+      //crossSectionPlot is the canvas showing the main/central unfolded dist. (hUnfData[0])
       crossSectionPlot->Write();
       //----------------------------------------------------------------------------------------- 
 
@@ -1512,6 +1523,7 @@ int UnfoldData(const TString lepSel, const TString algo, int svdKterm, RooUnfold
     }
 
     f->Close();
+    delete f;
 
     std::cout << "\n---------------------------------------------------------------------------------------------------------------\n-" << std::endl;
 
@@ -1525,11 +1537,36 @@ int UnfoldData(const TString lepSel, const TString algo, int svdKterm, RooUnfold
     hUnfData->SetName("UnfData" + name);
     hUnfData->SetTitle(hRecDataMinusFakes->GetTitle());
 
+
+    //andrew -- write out hUnfData before it gets scaled for xsec
+    //Want to construct TEfficiency for hRecDataMinusFakes and hUnfDataNoScale to use Wilson score errors 
+    TH1D *hUnfDataNoScale = (TH1D*) hUnfData->Clone();
+    hUnfDataNoScale->SetName("UnfData"+name+"_NoScale");
+    hUnfDataNoScale->SetTitle(hUnfData->GetTitle());
+    
+    //andrew
+    TFile *f2 = new TFile("UnfoldingCheck/" + lepSel + "_" + variable + "_" + name + ".root", "UPDATE");
+    f2->cd();
+    hUnfDataNoScale->Write();
+    f2->Close();
+    delete f2;
+
     if (algo == "Bayes") {
 	//--- get covariance from statistics on Data ---
 	hUnfDataStatCov = M2H(RObjectForData->Ereco(RooUnfold::kCovariance)); // new version of RooUnfold   
 	hUnfDataStatCov->SetName("UnfDataStatCov" + name);
 	hUnfDataStatCov->SetTitle(hRecDataMinusFakes->GetTitle());
+
+        //andrew
+        //Write out hUnfDataStatCov before it gets scaled for xsec to later construct bin-bin correlation matrix
+        TFile *f3 = new TFile("UnfoldingCheck/" + lepSel + "_" + variable + "_" + name + ".root", "UPDATE");
+        f3->cd();
+        TH2D *hUnfDataStatCovNoScale = (TH2D*) hUnfDataStatCov->Clone();
+        hUnfDataStatCovNoScale->SetName("UnfDataStatCov" + name + "_NoScale");
+        hUnfDataStatCovNoScale->SetTitle(hUnfDataStatCov->GetTitle());
+        hUnfDataStatCovNoScale->Write();
+        f3->Close();
+        delete f3;
 
 	//--- get covariance from MC stat ---
 	RooUnfold *RObjectForMC = RooUnfold::New(alg, resp, hRecDataMinusFakes, chosenIter);
@@ -1539,6 +1576,7 @@ int UnfoldData(const TString lepSel, const TString algo, int svdKterm, RooUnfold
 	hUnfMCStatCov->SetName("UnfMCStatCov" + name);
 	hUnfMCStatCov->SetTitle(hRecDataMinusFakes->GetTitle());
     }
+
 
     //--- divide by luminosity ---
     hUnfData->Scale(1./integratedLumi);
