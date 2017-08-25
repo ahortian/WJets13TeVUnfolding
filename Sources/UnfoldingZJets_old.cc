@@ -432,13 +432,8 @@ void UnfoldingZJets(TString lepSel, TString algo, TString histoDir, TString unfo
 			"XSECUp", "XSECDown", "LESUp", "LESDown", "LERUp", "LERDown",
 			"LumiUp", "LumiDown", "SFUp", "SFDown", "SherpaUnf"};
       TH1D *hUnfData[18] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,};
-      TH1D *hUnfDataNoScale[18] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,};
       TH2D *hUnfDataStatCov[18] =  { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,};
-      TH2D *hUnfDataStatCovNoScale[18] =  { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,};
       TH2D *hUnfMCStatCov[18] =  { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,};
-      TH2D *hUnfMCStatCovNoScale[18] =  { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,};
-      
-        
       int nIter[18] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; 
       int svdKterm(0);
       //if (lepSel == "DMu")
@@ -507,7 +502,8 @@ void UnfoldingZJets(TString lepSel, TString algo, TString histoDir, TString unfo
 	  hRecDataMinusFakesOdd = (TH1D*) hRecDataOdd->Clone();
 	  hRecDataMinusFakesOdd->Add(hRecSumBg[iBg], -0.5);
 	  RemoveFakes(hRecDataMinusFakesOdd, hFakDYJets[iSyst], hPurity[iSyst]);
-      hRecDataMinusFakesEven = (TH1D*) hRecDataEven->Clone();
+	  
+     	  hRecDataMinusFakesEven = (TH1D*) hRecDataEven->Clone();
 	  hRecDataMinusFakesEven->Add(hRecSumBg[iBg], -0.5);
 	  RemoveFakes(hRecDataMinusFakesEven, hFakDYJets[iSyst], hPurity[iSyst]);
 	} else{
@@ -534,8 +530,8 @@ void UnfoldingZJets(TString lepSel, TString algo, TString histoDir, TString unfo
 		    << " has no entries. Its unfolding will be skipped.\n";
 	  continue;
 	}
-	nIter[iSyst] = UnfoldData(lepSel, algo, svdKterm, respDYJets[iSyst], hRecDataMinusFakes, hUnfData[iSyst], hUnfDataNoScale[iSyst],
-				  hUnfDataStatCov[iSyst], hUnfDataStatCovNoScale[iSyst], hUnfMCStatCov[iSyst], hUnfMCStatCovNoScale[iSyst], name[iSyst], integratedLumi, logy,
+	nIter[iSyst] = UnfoldData(lepSel, algo, svdKterm, respDYJets[iSyst], hRecDataMinusFakes, hUnfData[iSyst], 
+				  hUnfDataStatCov[iSyst], hUnfMCStatCov[iSyst], name[iSyst], integratedLumi, logy,
 				  hRecDataMinusFakesOdd, hRecDataMinusFakesEven);
 
 	//--- save the unfolded histograms ---
@@ -543,49 +539,40 @@ void UnfoldingZJets(TString lepSel, TString algo, TString histoDir, TString unfo
 	//if(hUnfData[iSyst]) hUnfData[iSyst]->Write();
 	
         //andrew
-        //save the hRecDataMinusFakes i.e. detector level histograms for building correlation matrix,
-        //before loop goes to next iSyst
+        //save the hRecDataMinusFakes i.e. detector level histograms for building correlation matrix, before loop goes to next iSyst
         //here we grab the "central" detec.-level histo
         outputRootFile->cd();
+
         if (hRecDataMinusFakes && iSyst == 0){
-        TString detecName = "hDetecData"+name[iSyst];
+        TString detecName = "DetecData"+name[iSyst];
         TString detecTitle = variable;
         detecTitle += "_detectorlevel";
         hRecDataMinusFakes->SetNameTitle(detecName, detecTitle);
         hRecDataMinusFakes->Write();
         }
-    }
-      //-----------------------------------------------------------------------------------------
-        
+      }
+      //----------------------------------------------------------------------------------------- 
+
       if (doNormalized) {
 	for(int i = 0; i < nSysts; i++)
 	  {
 	    if(!hUnfData[i]) continue;
-
 	    double totUnfData = hUnfData[i]->Integral("width"); // normalize to central or itself? 
 	    hUnfData[i]->Scale(1.0/totUnfData);
 	    if (i == 0) {
 	      hUnfDataStatCov[0]->Scale(1.0/pow(totUnfData, 2));
 	      hUnfMCStatCov[0]->Scale(1.0/pow(totUnfData, 2));
 	    }
- 
-            //the "NoScale" here refers to not scaling by lumi and bin width for xsec
-            //we normalize the dist. the same here as with the original ones, however
-            //original reson for NoScale dist. is to do ratio calculations, and we need integral number of counts in bins
-	    double totUnfDataNoScale = hUnfDataNoScale[i]->Integral("width");
-	    hUnfDataNoScale[i]->Scale(1.0/totUnfDataNoScale);
-	    if (i == 0) {
-	      hUnfDataStatCovNoScale[0]->Scale(1.0/pow(totUnfDataNoScale, 2));
-	      hUnfMCStatCovNoScale[0]->Scale(1.0/pow(totUnfDataNoScale, 2));
-	    }
-
 	  }
       }
-        
+
+      for (unsigned short iSyst = 0; iSyst < nSysts; ++iSyst) {
+          outputRootFile->cd();
+          if(hUnfData[iSyst]) hUnfData[iSyst]->Write();
+      }
       //--- Now create the covariance matrices ---
-      int nCovs = nSysts > 17 ? 11 : 10;
-        
       TH2D *hCov[12] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,};
+      int nCovs = nSysts > 17 ? 11 : 10;
       if(hUnfDataStatCov[0]) hCov[0] = (TH2D*) hUnfDataStatCov[0]->Clone("CovDataStat");
       if(hUnfMCStatCov[0]) hCov[1] = (TH2D*) hUnfMCStatCov[0]->Clone("CovMCStat");
       if(hUnfData[1])  hCov[2] = makeCovFromUpAndDown(hUnfData[0], hUnfData[1], hUnfData[2], "CovJES");
@@ -600,33 +587,10 @@ void UnfoldingZJets(TString lepSel, TString algo, TString histoDir, TString unfo
       if(hUnfMCStatCov[0]) hCov[11] = (TH2D*) hUnfMCStatCov[0]->Clone("CovTotSyst");
       
       if(hCov[11]){
-	      for (int i = 2; i < nCovs; ++i){
-	          if(hCov[i]) hCov[11]->Add(hCov[i]);
-          }
+	for (int i = 2; i < nCovs; ++i){
+	  if(hCov[i]) hCov[11]->Add(hCov[i]);
+	}
       }
-        
-        //andrew
-        //Create covariance matrices not scaled for cross section
-       TH2D *hCovNoScale[12] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,};
-       if(hUnfDataStatCovNoScale[0]) hCovNoScale[0] = (TH2D*) hUnfDataStatCovNoScale[0]->Clone("CovDataStat_NoScale");
-       if(hUnfMCStatCovNoScale[0]) hCovNoScale[1] = (TH2D*) hUnfMCStatCovNoScale[0]->Clone("CovMCStat_NoScale");
-       if(hUnfDataNoScale[1])  hCovNoScale[2] = makeCovFromUpAndDown(hUnfData[0], hUnfDataNoScale[1], hUnfDataNoScale[2], "CovJES_NoScale");
-       if(hUnfDataNoScale[3])  hCovNoScale[3] = makeCovFromUpAndDown(hUnfData[0], hUnfDataNoScale[3], hUnfDataNoScale[4], "CovPU_NoScale");
-       if(hUnfDataNoScale[5])  hCovNoScale[4] = makeCovFromUpAndDown(hUnfData[0], hUnfDataNoScale[5], hUnfDataNoScale[6], "CovJER_NoScale");
-       if(hUnfDataNoScale[7])  hCovNoScale[5] = makeCovFromUpAndDown(hUnfData[0], hUnfDataNoScale[7], hUnfDataNoScale[8], "CovXSec_NoScale");
-       if(hUnfDataNoScale[9])  hCovNoScale[6] = makeCovFromUpAndDown(hUnfData[0], hUnfDataNoScale[9], hUnfDataNoScale[10], "CovLES_NoScale");
-       if(hUnfDataNoScale[11]) hCovNoScale[7] = makeCovFromUpAndDown(hUnfData[0], hUnfDataNoScale[11], hUnfDataNoScale[12], "CovLER_NoScale");
-       if(hUnfDataNoScale[13]) hCovNoScale[8] = makeCovFromUpAndDown(hUnfData[0], hUnfDataNoScale[13], hUnfDataNoScale[14], "CovLumi_NoScale");
-       if(hUnfDataNoScale[15]) hCovNoScale[9] = makeCovFromUpAndDown(hUnfData[0], hUnfDataNoScale[15], hUnfDataNoScale[16], "CovSF_NoScale");
-       if(hUnfDataNoScale[17]) hCovNoScale[10] = makeCovFromUpAndDown(hUnfData[0], hUnfDataNoScale[17], hUnfDataNoScale[0], "CovSherpaUnf_NoScale");
-       if(hUnfMCStatCovNoScale[0]) hCovNoScale[11] = (TH2D*) hUnfMCStatCovNoScale[0]->Clone("CovTotSyst_NoScale");
-          
-       if(hCovNoScale[11]){
-           for (int i = 2; i < nCovs; ++i){
-               if(hCovNoScale[i]) hCovNoScale[11]->Add(hCovNoScale[i]);
-           }
-       }
-    
 
       if (doNormalized) {
 	double Madtot = hMadGenCrossSection->Integral("width");
@@ -634,7 +598,7 @@ void UnfoldingZJets(TString lepSel, TString algo, TString histoDir, TString unfo
 	//double gen2tot = hGen2CrossSection->Integral("width");
 	hMadGenCrossSection->Scale(1.0/Madtot);
 	//hGen1CrossSection->Scale(1.0/gen1tot);	
-	//hGen2CrossSection->Scale(1.0/gen2tot);
+	//hGen2CrossSection->Scale(1.0/gen2tot);	
       }
 
       
@@ -701,17 +665,8 @@ void UnfoldingZJets(TString lepSel, TString algo, TString histoDir, TString unfo
       //andrew - hResDYJets is the TH2 used to form response objects respDYJets
       hResDYJets[0]->Write("hResDYJetsCentral");
 
-      //write out unfolded histograms
-      for (unsigned short iSyst = 0; iSyst < nSysts; ++iSyst) {
-          outputRootFile->cd();
-          if(hUnfData[iSyst]) hUnfData[iSyst]->Write();
-          if(hUnfDataNoScale[iSyst]) hUnfDataNoScale[iSyst]->Write();
-      }
-        
-      //write out covariance matrices (includes stat. for central (data and MC) and systematics from "up-down" dist.)
       for (int i = 0; i <= 11; ++i) {
           if(hCov[i]) hCov[i]->Write();
-          if(hCovNoScale[i]) hCovNoScale[i]->Write();
       }
         
       TH1D *h_TotalUncer = (TH1D*) hUnfData[0]->Clone();
@@ -1054,7 +1009,7 @@ void createTable(TString outputFileName, TString lepSel, TString variable, bool 
 
 int UnfoldData(const TString lepSel, const TString algo, int svdKterm, RooUnfoldResponse *resp,
 	       TH1D* hRecDataMinusFakes,
-	       TH1D* &hUnfData, TH1D* &hUnfDataNoScale, TH2D* &hUnfDataStatCov, TH2D* &hUnfDataStatCovNoScale, TH2D* &hUnfMCStatCov, TH2D* &hUnfMCStatCovNoScale, TString name,
+	       TH1D* &hUnfData, TH2D* &hUnfDataStatCov, TH2D* &hUnfMCStatCov, TString name, 
 	       double integratedLumi, bool logy,
 	       TH1D *hRecDataMinusFakesOdd, TH1D *hRecDataMinusFakesEven)
 {
@@ -1582,25 +1537,36 @@ int UnfoldData(const TString lepSel, const TString algo, int svdKterm, RooUnfold
     hUnfData->SetName("UnfData" + name);
     hUnfData->SetTitle(hRecDataMinusFakes->GetTitle());
 
+
     //andrew -- write out hUnfData before it gets scaled for xsec
     //Want to construct TEfficiency for hRecDataMinusFakes and hUnfDataNoScale to use Wilson score errors 
-    hUnfDataNoScale = (TH1D*) hUnfData->Clone();
+    TH1D *hUnfDataNoScale = (TH1D*) hUnfData->Clone();
     hUnfDataNoScale->SetName("UnfData"+name+"_NoScale");
     hUnfDataNoScale->SetTitle(hUnfData->GetTitle());
     
+    //andrew
+    TFile *f2 = new TFile("UnfoldingCheck/" + lepSel + "_" + variable + "_" + name + ".root", "UPDATE");
+    f2->cd();
+    hUnfDataNoScale->Write();
+    f2->Close();
+    delete f2;
 
     if (algo == "Bayes") {
 	//--- get covariance from statistics on Data ---
 	hUnfDataStatCov = M2H(RObjectForData->Ereco(RooUnfold::kCovariance)); // new version of RooUnfold   
 	hUnfDataStatCov->SetName("UnfDataStatCov" + name);
 	hUnfDataStatCov->SetTitle(hRecDataMinusFakes->GetTitle());
-        
-    //andrew
-    //Write out hUnfDataStatCov before it gets scaled for xsec to later construct bin-bin correlation matrix
-    hUnfDataStatCovNoScale = (TH2D*) hUnfDataStatCov->Clone();
-    hUnfDataStatCovNoScale->SetName("UnfDataStatCov" + name + "_NoScale");
-    hUnfDataStatCovNoScale->SetTitle(hUnfDataStatCov->GetTitle());
 
+        //andrew
+        //Write out hUnfDataStatCov before it gets scaled for xsec to later construct bin-bin correlation matrix
+        TFile *f3 = new TFile("UnfoldingCheck/" + lepSel + "_" + variable + "_" + name + ".root", "UPDATE");
+        f3->cd();
+        TH2D *hUnfDataStatCovNoScale = (TH2D*) hUnfDataStatCov->Clone();
+        hUnfDataStatCovNoScale->SetName("UnfDataStatCov" + name + "_NoScale");
+        hUnfDataStatCovNoScale->SetTitle(hUnfDataStatCov->GetTitle());
+        hUnfDataStatCovNoScale->Write();
+        f3->Close();
+        delete f3;
 
 	//--- get covariance from MC stat ---
 	RooUnfold *RObjectForMC = RooUnfold::New(alg, resp, hRecDataMinusFakes, chosenIter);
@@ -1609,11 +1575,6 @@ int UnfoldData(const TString lepSel, const TString algo, int svdKterm, RooUnfold
 	hUnfMCStatCov = M2H(RObjectForMC->Ereco(RooUnfold::kCovariance)); // new version of RooUnfold
 	hUnfMCStatCov->SetName("UnfMCStatCov" + name);
 	hUnfMCStatCov->SetTitle(hRecDataMinusFakes->GetTitle());
-        
-    //andrew
-    hUnfMCStatCovNoScale = (TH2D*) hUnfMCStatCov->Clone();
-    hUnfMCStatCovNoScale->SetName("UnfMCStatCov" + name + "_NoScale");
-    hUnfMCStatCovNoScale->SetTitle(hUnfMCStatCov->GetTitle());
     }
 
 
