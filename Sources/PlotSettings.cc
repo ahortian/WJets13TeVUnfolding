@@ -1678,73 +1678,82 @@ void createTitleVariableAnddSigma(TString variable, bool doNormalized, TString x
 
 TGraphAsymmErrors* createScaleSystGraphNNLO1j(TString lepSel, TString variable, const TGraphAsymmErrors *grGenToCentral)
 {
-    int nPoints = grGenToCentral->GetN();
-    double *xCoor    = new double[nPoints];
-    double *yCoor    = new double[nPoints];
-    double *xErr     = new double[nPoints];
-    double *yErrUp   = new double[nPoints];
-    double *yErrDown = new double[nPoints];
-    
-    TString histoDir = cfg.getS("histoDir");
-
-    TString inFileName = histoDir + "/" + lepSel + "_13TeV_NNLO1J.root";
-    
-    TH1D *hErrorsUp;
-    TH1D *hErrorsDown;
-    TH1D *hGenCentral;
-    TFile *fNNLO = new TFile(inFileName);
-    hErrorsUp = (TH1D*)fNNLO->Get("gen" + variable + "Max");
-    hErrorsDown = (TH1D*)fNNLO->Get("gen" + variable + "Min");
-    hGenCentral = (TH1D*)fNNLO->Get("gen" + variable);
-    hErrorsUp->Divide(hGenCentral);
-    hErrorsDown->Divide(hGenCentral);
-
-    for (int i(0); i < nPoints; i++) {
-        grGenToCentral->GetPoint(i, xCoor[i], yCoor[i]);
-        
-        xErr[i] = grGenToCentral->GetErrorXlow(i);
-        
-        yErrUp[i] = pow(grGenToCentral->GetErrorYhigh(i), 2);
-        std::cout << "X coor: " << xCoor[i] << "  scale uncertainty up: " << fabs(hErrorsUp->GetBinContent(i+1) - 1) << std::endl;
-        yErrUp[i] += pow(fabs(hErrorsUp->GetBinContent(i+1) - 1), 2);
-        yErrUp[i] = sqrt(yErrUp[i]);
-        
-        yErrDown[i] = pow(grGenToCentral->GetErrorYlow(i), 2);
-        std::cout << "X coor: " << xCoor[i] << "  scale uncertainty down: " << fabs(hErrorsDown->GetBinContent(i+1) - 1) << std::endl;
-        yErrDown[i] += pow(fabs(1 - hErrorsDown->GetBinContent(i+1)), 2);
-        yErrDown[i] = sqrt(yErrDown[i]);
-        
-    }
-
-    TGraphAsymmErrors *grScaleSyst = new TGraphAsymmErrors(nPoints, xCoor, yCoor, xErr, xErr, yErrDown, yErrUp);
-    delete [] xCoor; delete [] yCoor; delete [] xErr; delete [] yErrDown; delete [] yErrUp;
-    fNNLO->Close();
-    
-    return grScaleSyst;
-
-    
+	int nPoints = grGenToCentral->GetN();
+	double *xCoor    = new double[nPoints];
+	double *yCoor    = new double[nPoints];
+	double *xErr     = new double[nPoints];
+	double *yErrUp   = new double[nPoints];
+	double *yErrDown = new double[nPoints];
+	
+	TString histoDir = cfg.getS("histoDir");
+	
+	TString inFileName = histoDir + "/" + lepSel + "_13TeV_NNLO1J.root";
+	std::cout << " createScaleSystGraphNNLO1j from file: " << inFileName << std::endl;
+	
+	TH1D *hErrorsUp;
+	TH1D *hErrorsDown;
+	TH1D *hGenCentral;
+	TFile *fNNLO = new TFile(inFileName);
+	hErrorsUp = (TH1D*)fNNLO->Get("gen" + variable + "Max"); // this has only scale uncer
+	hErrorsDown = (TH1D*)fNNLO->Get("gen" + variable + "Min"); // this has only scale uncer
+	hGenCentral = (TH1D*)fNNLO->Get("gen" + variable); //--- the stat err is from non-perturbative corr.
+	hErrorsUp->Divide(hGenCentral);
+	hErrorsDown->Divide(hGenCentral);
+	
+	for (int i(0); i < nPoints; i++) {
+		grGenToCentral->GetPoint(i, xCoor[i], yCoor[i]);
+		
+		xErr[i] = grGenToCentral->GetErrorXlow(i);
+		
+		double fracStat2Up(0);
+		if (yCoor[i]>0) fracStat2Up = pow(grGenToCentral->GetErrorYhigh(i)/yCoor[i], 2);
+		double fracScal2Up(0);
+		if (hGenCentral->GetBinContent(i+1)>0) fracScal2Up = pow(fabs(hErrorsUp->GetBinContent(i+1) - 1), 2);
+		double fracTotUp = sqrt(fracStat2Up + fracScal2Up);
+		yErrUp[i] = fracTotUp * yCoor[i];
+		
+		double fracStat2Dn(0);
+		if (yCoor[i]>0) fracStat2Dn = pow(grGenToCentral->GetErrorYlow(i)/yCoor[i], 2);
+		double fracScal2Dn(0);
+		if (hGenCentral->GetBinContent(i+1)>0) fracScal2Dn = pow(fabs(hErrorsDown->GetBinContent(i+1) - 1), 2);
+		double fracTotDn = sqrt(fracStat2Dn + fracScal2Dn);
+		yErrDown[i] = fracTotDn * yCoor[i];
+		
+		std::cout << "  X coor: " << xCoor[i] << " Y coor: " << yCoor[i]
+		<< "  tot uncertainty up: " << yErrUp[i]
+		<< "  tot uncertainty down: " << yErrDown[i]
+		<< std::endl;
+	}
+	
+	TGraphAsymmErrors *grScaleSyst = new TGraphAsymmErrors(nPoints, xCoor, yCoor, xErr, xErr, yErrDown, yErrUp);
+	delete [] xCoor; delete [] yCoor; delete [] xErr; delete [] yErrDown; delete [] yErrUp;
+	fNNLO->Close();
+	
+	return grScaleSyst;
+	
+	
 //    for(int i = 1; i<= nBins; i++){
 //        int nBins = genNNLO->GetNbinsX()
 //        nnlo_ySystUp[i-1] = pow( genScErrUp->GetBinContent(i)/genNNLO->GetBinContent(i) , 2);
 //        nnlo_ySystDn[i-1] = pow( genScErrDn->GetBinContent(i)/genNNLO->GetBinContent(i) , 2);
 //        //nnlo_ySystUp[i-1] += pow( hisHCorr->GetBinError(i)/hisHCorr->GetBinContent(i), 2);
 //        //nnlo_ySystDn[i-1] += pow( hisHCorr->GetBinError(i)/hisHCorr->GetBinContent(i), 2);
-//        
+//
 //        //--- correction factor if applicable ---
 //        //genNNLO->Scale(1.011);
 //        //genNNLO->Multiply(hisHCorr);
-//        
+//
 //        nnlo_yCoor[i-1] = genNNLO->GetBinContent(i);
 //        nnlo_ySystUp[i-1] = sqrt(nnlo_ySystUp[i-1]) * genNNLO->GetBinContent(i);
 //        nnlo_ySystDn[i-1] = sqrt(nnlo_ySystDn[i-1]) * genNNLO->GetBinContent(i);
-//        
+//
 //        nnlo_xCoor[i-1]    = genNNLO->GetBinCenter(i);
 //        nnlo_xErr[i-1]     = 0.5 * genNNLO->GetBinWidth(i);
 //    }
-//    
+//
 //    //--- Set up for systematic plot on pad 1
 //    genNNLOgrSyst = new TGraphAsymmErrors(nBins, nnlo_xCoor, nnlo_yCoor, nnlo_xErr, nnlo_xErr, nnlo_ySystDn, nnlo_ySystUp);
-//    
+//
 //    return genNNLOgrSyst;
 }
 
@@ -1762,6 +1771,7 @@ TGraphAsymmErrors* createTotSystGraphAMCNLO(TString lepSel, TString variable, co
 	TString histoDir = cfg.getS("histoDir");
 	
 	TString inFileName = histoDir + "/" + lepSel + "_13TeV_AMCNLO_Syst.root";
+	std::cout << " createTotSystGraphAMCNLO from file: " << inFileName << std::endl;
 	
 	TH1D *hErrorsUp;
 	TH1D *hErrorsDown;
@@ -1778,12 +1788,18 @@ TGraphAsymmErrors* createTotSystGraphAMCNLO(TString lepSel, TString variable, co
 		
 		xErr[i] = grGenToCentral->GetErrorXlow(i);
 		
-		yErrUp[i] = fabs(hErrorsUp->GetBinContent(i+1) - 1);
-		std::cout << "X coor: " << xCoor[i] << "  tot uncertainty up: " << fabs(hErrorsUp->GetBinContent(i+1) - 1) << std::endl;
+		double fracTotUp(0);
+		if (hGenCentral->GetBinContent(i+1)>0) fracTotUp = fabs(hErrorsUp->GetBinContent(i+1) - 1);
+		yErrUp[i] = fracTotUp * yCoor[i];
 		
-		yErrDown[i] = fabs(hErrorsDown->GetBinContent(i+1) - 1);
-		std::cout << "X coor: " << xCoor[i] << "  tot uncertainty down: " << fabs(hErrorsDown->GetBinContent(i+1) - 1) << std::endl;
+		double fracTotDn(0);
+		if (hGenCentral->GetBinContent(i+1)>0) fracTotDn = fabs(hErrorsDown->GetBinContent(i+1) - 1);
+		yErrDown[i] = fracTotDn * yCoor[i];
 		
+		std::cout << "  X coor: " << xCoor[i] << " Y coor: " << yCoor[i]
+		<< "  tot uncertainty up: " << yErrUp[i]
+		<< "  tot uncertainty down: " << yErrDown[i]
+		<< std::endl;
 	}
 	
 	TGraphAsymmErrors *grTotSyst = new TGraphAsymmErrors(nPoints, xCoor, yCoor, xErr, xErr, yErrDown, yErrUp);
