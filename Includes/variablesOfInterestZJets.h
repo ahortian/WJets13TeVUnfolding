@@ -168,6 +168,12 @@ const variableStruct VAROFINTERESTZJETS[] = {
     {"HTover2_Zexc3jet_R32",         1,      1,          1,              4,             1,            1 ,               1    },// 1
     {"HTover2_Zexc3jet_R43",         1,      1,          1,              4,             1,            1 ,               1    },// 1
     {"HTover2_Zexc4jet_R43",         1,      1,          1,              4,             1,            1 ,               1    },// 1
+    {"LepPtPlusHTover2_Zinc2jet_R32",         1,      1,          1,              4,             1,            1 ,               1    },// 1
+    {"LepPtPlusHTover2_Zinc3jet_R32",         1,      1,          1,              4,             1,            1 ,               1    },// 1
+    {"LepPtPlusHTover2_Zinc3jet_R43",         1,      1,          1,              4,             1,            1 ,               1    },// 1
+    {"LepPtPlusHTover2_Zinc4jet_R43",         1,      1,          1,              4,             1,            1 ,               1    },// 1
+    {"LepPtPlusHTover3_Zinc3jet_R43",         1,      1,          1,              4,             1,            1 ,               1    },// 1
+    {"LepPtPlusHTover3_Zinc4jet_R43",         1,      1,          1,              4,             1,            1 ,               1    },// 1
 
 }; 
 
