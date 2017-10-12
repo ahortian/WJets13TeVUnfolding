@@ -168,12 +168,34 @@ const variableStruct VAROFINTERESTZJETS[] = {
     {"HTover2_Zexc3jet_R32",         1,      1,          1,              4,             1,            1 ,               1    },// 1
     {"HTover2_Zexc3jet_R43",         1,      1,          1,              4,             1,            1 ,               1    },// 1
     {"HTover2_Zexc4jet_R43",         1,      1,          1,              4,             1,            1 ,               1    },// 1
+    {"HTover3_Zinc3jet_R43",         1,      1,          1,              4,             1,            1 ,               1    },
+    {"HTover3_Zinc4jet_R43",         1,      1,          1,              4,             1,            1 ,               1    },
+    {"HTover3_Zexc3jet_R43",         1,      1,          1,              4,             1,            1 ,               1    },
+    {"HTover3_Zexc4jet_R43",         1,      1,          1,              4,             1,            1 ,               1    },
+    {"LepPtPlusHT_Zinc1jet_R21",         1,      1,          1,              4,             1,            1 ,               1    },
+    {"LepPtPlusHT_Zinc2jet_R21",         1,      1,          1,              4,             1,            1 ,               1    },
+    {"LepPtPlusHT_Zinc2jet_R32",         1,      1,          1,              4,             1,            1 ,               1    },
+    {"LepPtPlusHT_Zinc3jet_R32",         1,      1,          1,              4,             1,            1 ,               1    },
+    {"LepPtPlusHT_Zinc3jet_R43",         1,      1,          1,              4,             1,            1 ,               1    },
+    {"LepPtPlusHT_Zinc4jet_R43",         1,      1,          1,              4,             1,            1 ,               1    },
     {"LepPtPlusHTover2_Zinc2jet_R32",         1,      1,          1,              4,             1,            1 ,               1    },// 1
     {"LepPtPlusHTover2_Zinc3jet_R32",         1,      1,          1,              4,             1,            1 ,               1    },// 1
     {"LepPtPlusHTover2_Zinc3jet_R43",         1,      1,          1,              4,             1,            1 ,               1    },// 1
     {"LepPtPlusHTover2_Zinc4jet_R43",         1,      1,          1,              4,             1,            1 ,               1    },// 1
     {"LepPtPlusHTover3_Zinc3jet_R43",         1,      1,          1,              4,             1,            1 ,               1    },// 1
     {"LepPtPlusHTover3_Zinc4jet_R43",         1,      1,          1,              4,             1,            1 ,               1    },// 1
+    {"LepPtPlusHT_1_Zinc1jet_R21",      1,      1,          1,              4,             1,            1 ,               1    },
+    {"LepPtPlusHT_1_Zinc2jet_R21",      1,      1,          1,              4,             1,            1 ,               1    },
+    {"LepPtPlusHT_1_Zinc2jet_R32",      1,      1,          1,              4,             1,            1 ,               1    },
+    {"LepPtPlusHT_1_Zinc3jet_R32",      1,      1,          1,              4,             1,            1 ,               1    },
+    {"LepPtPlusHT_1_Zinc3jet_R43",      1,      1,          1,              4,             1,            1 ,               1    },
+    {"LepPtPlusHT_1_Zinc4jet_R43",      1,      1,          1,              4,             1,            1 ,               1    },
+    {"LepPtPlusHTover2_1_Zinc2jet_R32",      1,      1,          1,              4,             1,            1 ,               1    },
+    {"LepPtPlusHTover2_1_Zinc3jet_R32",      1,      1,          1,              4,             1,            1 ,               1    },
+    {"LepPtPlusHTover2_1_Zinc3jet_R43",      1,      1,          1,              4,             1,            1 ,               1    },
+    {"LepPtPlusHTover2_1_Zinc4jet_R43",      1,      1,          1,              4,             1,            1 ,               1    },
+    {"LepPtPlusHTover3_1_Zinc3jet_R43",      1,      1,          1,              4,             1,            1 ,               1    },
+    {"LepPtPlusHTover3_1_Zinc4jet_R43",      1,      1,          1,              4,             1,            1 ,               1    },
 
 }; 
 
