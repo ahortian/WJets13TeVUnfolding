@@ -93,7 +93,8 @@ void UnfoldingZJets(TString lepSel, TString algo, TString histoDir, TString unfo
 //      return;
 //    }
 
-    double integratedLumi = 2239.351439352; 
+    //double integratedLumi = 2239.351439352; 
+    double integratedLumi = 35861.00;
     
     cout << " DYSHERPA14FILENAME " << DYSHERPA14FILENAME << endl;
     cout << " DYMGPYTHIA8FILENAME " << DYMGPYTHIA8FILENAME << endl;
@@ -374,8 +375,10 @@ void UnfoldingZJets(TString lepSel, TString algo, TString histoDir, TString unfo
       hGen1->Write("hGen1DYJetsCrossSection_NoScale");
 
       TH1D *hMadGenCrossSection = makeCrossSectionHist(hGenDYJets[0], integratedLumi);
-      hMadGenCrossSection->SetZTitle("MG_aMC FxFx + PY8 (#leq 2j NLO + PS)");
+      //andrew -- need to double check that this is pulling from the wjets source MC that's listed in the Samples structure in fileNamesZJets.h
+      hMadGenCrossSection->SetZTitle("MG_aMC FxFx + PY8 (#leq 2j NLO + PS) - ???");
     TH1D *hGen1CrossSection = makeCrossSectionHist(hGen1, integratedLumi);
+      //andrew -- this should be the wjets signal mc mlm
       hGen1CrossSection->SetZTitle(generatorNames[gen1][1]);
        TH1D *hGen2CrossSection;
         if (variable == "FirstJetPt_Zinc1jet" || variable == "JetsHT_Zinc1jet" || variable == "FirstJetAbsRapidity_Zinc1jet" || variable == "dRptmin100LepCloseJetCo300dR04_Zinc1jet" || variable == "dPhiLepJet1_Zinc1jet"){

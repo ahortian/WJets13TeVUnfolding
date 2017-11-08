@@ -114,11 +114,11 @@ void getFiles(TString histoDir, TFile *Files[], TString lepSel, TString energy, 
 //        Syst.push_back("5_Down");    // 5 down: LES down
 //    };
     
-    if (Name.Index("Data") >= 0 || Name.Index("data") >= 0 || Name.Index("DATA") >= 0) { // for data we have:
-        Syst.push_back("0");                 //   0: central
-        Syst.push_back("2_Up");              //   2 up: JES up
-        Syst.push_back("2_Down");            //   2 down: JES down
-    }
+//    if (Name.Index("Data") >= 0 || Name.Index("data") >= 0 || Name.Index("DATA") >= 0) { // for data we have:
+//        Syst.push_back("0");                 //   0: central
+//        Syst.push_back("2_Up");              //   2 up: JES up
+//        Syst.push_back("2_Down");            //   2 down: JES down
+//    }
 //    else if (Name.Index("UNFOLDING") >= 0 && /*Name.Index("DYJets") >= 0 &&*/ Name.Index("Tau") < 0) {
 //        // for DYJets in case of Z+Jets or for WJets in case of W+Jets analysis we have:
 //        Syst.push_back("0");         // 0: central
@@ -148,11 +148,11 @@ void getFiles(TString histoDir, TFile *Files[], TString lepSel, TString energy, 
 
     
     
-//    if (Name.Index("Data") >= 0) { // for data we have:
-//        Syst.push_back("0");                 //   0: central
-//        Syst.push_back("0");              //   2 up: JES up
-//        Syst.push_back("0");            //   2 down: JES down
-//    }
+    if (Name.Index("Data") >= 0) { // for data we have:
+        Syst.push_back("0");                 //   0: central
+        Syst.push_back("0");              //   2 up: JES up
+        Syst.push_back("0");            //   2 down: JES down
+    }
     else if (Name.Index("UNFOLDING") >= 0 && /*Name.Index("DYJets") >= 0 &&*/ Name.Index("Tau") < 0) {
         // for DYJets in case of Z+Jets or for WJets in case of W+Jets analysis we have:
         Syst.push_back("0");         // 0: central
