@@ -26,8 +26,7 @@ const processInfoStruct Samples[] = {
     /* 0*/{"Data",      ' ',     1.,       1.,      1,  1,        kBlack,    kBlack,    " Data", " Data"},
     /* 1*/{"TT",        ' ',     1.,       1.,      1,  0.10,     kBlue,     kBlue,     " TT",   " t#bar{t}"},  
     /* 2*/{"Top",       ' ',     1.,       1.,      1,  0.06,     kMagenta,  kMagenta,  " Single Top", "Single top"},
-    //andrew -- qcd edit
-    ///* 3*/{"QCD",       ' ',     1.,       1.,      1,  0.06,     kYellow,   kYellow,   " QCD", ""},
+    /* 3*/{"QCD",       ' ',     1.,       1.,      1,  0.06,     kYellow,   kYellow,   " QCD", ""},
     /* 4*/{"ZZ",        ' ',     1.,       1.,      1,  0.06,     kOrange,   kOrange,   " ZZ", " ZZ"},
     /* 5*/{"WWTo2L2Nu", ' ',     1.,       1.,      1,  0.06,     kViolet+5, kViolet+5, " WW", " WW"},
     /* 6*/{"WZ",    	' ',     1.,       1.,      1,  0.06,     kRed+1,    kRed+1,    " WZ", " WZ"},
@@ -42,9 +41,8 @@ const int DYJETS(NSamples - 1); // Signal MC is the seconf from the last sample 
 
 /** Total number of samples after sample grouping, including real data, background MC, and signal MC
  */
-//andrew -- qcd edit
-//const unsigned int NFILESDYJETS = 9;
-const unsigned int NFILESDYJETS = 9 - 1;
+const unsigned int NFILESDYJETS = 9;
+//const unsigned int NFILESDYJETS = 9 - 1;
 
 /** Number of background MC samples: all minus data and the signal MC
  */
@@ -53,9 +51,8 @@ const unsigned int NBGDYJETS = NFILESDYJETS - 2;
 /** List of indices of samples from Samples to be used for ZJets analysis
  * When samples are grouped, only the merged sample is included in this list.
  */
-//anrew -- qcd edit
-//const unsigned int FilesDYJets[NFILESDYJETS] = {0, 1, 2, 3, 4, 5, 6, 7, 8};
-const unsigned int FilesDYJets[NFILESDYJETS] = {0, 1, 2, 3, 4, 5, 6, 7};
+const unsigned int FilesDYJets[NFILESDYJETS] = {0, 1, 2, 3, 4, 5, 6, 7, 8};
+//const unsigned int FilesDYJets[NFILESDYJETS] = {0, 1, 2, 3, 4, 5, 6, 7};
 //const unsigned int FilesDYJets[NFILESDYJETS] = {0, 1, 2};
 
 
