@@ -594,13 +594,26 @@ void configXaxis(TH1D *grCentralSyst, TH1D *gen1, TString variable)
         else if (variable.Index("7jet") >= 0) njets = "7";
         else if (variable.Index("8jet") >= 0) njets = "8";
         //andrew
-        if (xtitle.Index("H_{T}/2") >= 0) {
-            xtitle = "H_{T}/2, N_{jets} #geq " + njets + " [GeV]";
+        if (xtitle.Index("H_{T}/2") >= 0 || xtitle.Index("H_{T,2}/2") >= 0) {
+            xtitle = "H_{T,2}/2, N_{jets} #geq " + njets + " [GeV]";
+        }
+        else if (xtitle.Index("H_{T}/3") >= 0 || xtitle.Index("H_{T,3}/3") >= 0){ 
+             xtitle = "H_{T,3}/3, N_{jets} #geq " + njets + " [GeV]";
+        }
+        else if (xtitle.Index("p_{T}(#mu)+H_{T}") >= 0){
+              xtitle = "p_{T}(#mu)+H_{T}, N_{jets} #geq " + njets + " [GeV]";
+        }
+        else if (xtitle.Index("p_{T}(#mu)+H_{T}/2") >= 0 || xtitle.Index("p_{T}(#mu)+H_{T,2}/2") >= 0){
+              xtitle = "p_{T}(#mu)+H_{T,2}/2, N_{jets} #geq " + njets + " [GeV]";
+        }
+        else if (xtitle.Index("p_{T}(#mu)+H_{T}/3") >= 0 || xtitle.Index("p_{T}(#mu)+H_{T,3}/3") >= 0){
+              xtitle = "p_{T}(#mu)+H_{T,3}/3, N_{jets} #geq " + njets + " [GeV]";
         }
         else {
             xtitle = "H_{T}, N_{jets} #geq " + njets + " [GeV]";
         }
     }
+
 
     grCentralSyst->GetXaxis()->SetTitle(xtitle);
     grCentralSyst->GetXaxis()->SetTitleSize(0.14);
@@ -745,6 +758,7 @@ TCanvas* makeCrossSectionPlot(TString lepSel, TString variable, bool doNormalize
     //---------------------------------------------
 
     //--- Main Canvas ---
+    //andrew -- "maximum" and "minimum" are used as y-axis constraints on the main plots
     double maximum = hGen1->GetMaximum();
     double minimum = hGen1->GetMinimum();
     if (! minimum > 0) minimum = 1e-06;
@@ -770,6 +784,8 @@ TCanvas* makeCrossSectionPlot(TString lepSel, TString variable, bool doNormalize
     hSyst->SetLineColor(kWhite);
     hSyst->SetMarkerColor(kWhite);
     hSyst->SetTitle("");
+
+    //andrew -- here begins the axis ranges
     hSyst->GetXaxis()->SetLabelSize(0);
     hSyst->GetYaxis()->SetTitle("");
     if (canvasName.Contains("FirstJetPt_Zinc1jet")||canvasName.Contains("JetsHT_Zinc1jet")||canvasName.Contains("FirstJetAbsRapidity_Zinc1jet")||canvasName.Contains("dPhiLepJet1_Zinc1jet")||canvasName.Contains("dRptmin100LepCloseJetCo300dR04_Zinc1jet")){
@@ -786,39 +802,55 @@ TCanvas* makeCrossSectionPlot(TString lepSel, TString variable, bool doNormalize
         hSyst->GetXaxis()->SetRangeUser(0.5, 6.5);
         hSyst->GetYaxis()->SetRangeUser(0.011, 5.0*maximum);
     }
-    if (canvasName.Contains("JetPt_Zinc")) {
-        hSyst->GetXaxis()->SetRangeUser(30, hSyst->GetXaxis()->GetXmax());
-    }
+  //  if (canvasName.Contains("JetPt_Zinc")) {
+  //      hSyst->GetXaxis()->SetRangeUser(30, hSyst->GetXaxis()->GetXmax());
+  //  }
   //  if (canvasName.Contains("JetPt_Zinc1jet")) {
   //      hSyst->GetXaxis()->SetRangeUser(30, 900);
   //      hSyst->GetYaxis()->SetRangeUser(0.15*minimum, 1.0*maximum);
-  if (canvasName.Contains("LeadingJetPt_Zinc1jet")){
+  if (canvasName.Contains("LeadingJetPt_Zinc")){
         hSyst->GetXaxis()->SetRangeUser(30,900);
-        hSyst->GetYaxis()->SetRangeUser(minimum, maximum);   
+        hSyst->GetYaxis()->SetRangeUser(minimum, maximum*100.);   
     }
   //  if (canvasName.Contains("JetPt_Zinc2jet")) {
   //      hSyst->GetXaxis()->SetRangeUser(30, 400);   ///??problematic to set upper range???
   //     // hSyst->GetXaxis()->SetRangeUser(30, hSyst->GetXaxis()->GetXmax());
   //      hSyst->GetYaxis()->SetRangeUser(0.15*minimum, 1.0*maximum);
-   if (canvasName.Contains("LeadingJetPt_Zinc2jet")){
-        hSyst->GetXaxis()->SetRangeUser(30,900);
-        hSyst->GetYaxis()->SetRangeUser(minimum, maximum);
-    }
-  //  if (canvasName.Contains("JetPt_Zinc3jet")) {
-  //      hSyst->GetXaxis()->SetRangeUser(30, 300);
-  //      //hSyst->GetYaxis()->SetRangeUser(0.002, 10);
-  //      hSyst->GetYaxis()->SetRangeUser(0.15*minimum, 1.0*maximum);
-  if (canvasName.Contains("LeadingJetPt_Zinc3jet")){
-        hSyst->GetXaxis()->SetRangeUser(30,900);
-        hSyst->GetYaxis()->SetRangeUser(minimum, maximum);
-    }
-  //  if (canvasName.Contains("JetPt_Zinc4jet")) {
-  //      hSyst->GetXaxis()->SetRangeUser(30, 180);
-  //      hSyst->GetYaxis()->SetRangeUser(0.15*minimum, 1.0);
-  if (canvasName.Contains("LeadingJetPt_Zinc4jet")){
-        hSyst->GetXaxis()->SetRangeUser(30,900);
-        hSyst->GetYaxis()->SetRangeUser(minimum, maximum);
-    }
+//   if (canvasName.Contains("LeadingJetPt_Zinc2jet")){
+//        hSyst->GetXaxis()->SetRangeUser(30,900);
+//        hSyst->GetYaxis()->SetRangeUser(minimum, maximum*100.);
+//    }
+//  //  if (canvasName.Contains("JetPt_Zinc3jet")) {
+//  //      hSyst->GetXaxis()->SetRangeUser(30, 300);
+//  //      //hSyst->GetYaxis()->SetRangeUser(0.002, 10);
+//  //      hSyst->GetYaxis()->SetRangeUser(0.15*minimum, 1.0*maximum);
+//  if (canvasName.Contains("LeadingJetPt_Zinc3jet")){
+//        hSyst->GetXaxis()->SetRangeUser(30,900);
+//        hSyst->GetYaxis()->SetRangeUser(minimum, maximum*100.);
+//    }
+//  //  if (canvasName.Contains("JetPt_Zinc4jet")) {
+//  //      hSyst->GetXaxis()->SetRangeUser(30, 180);
+//  //      hSyst->GetYaxis()->SetRangeUser(0.15*minimum, 1.0);
+//  if (canvasName.Contains("LeadingJetPt_Zinc4jet")){
+//        hSyst->GetXaxis()->SetRangeUser(30,900);
+//        hSyst->GetYaxis()->SetRangeUser(minimum, maximum*100.);
+//    }
+  if (canvasName.Contains("LepPtPlusHT_Zinc")){
+         hSyst->GetXaxis()->SetRangeUser(30,900);
+         hSyst->GetYaxis()->SetRangeUser(minimum, maximum*100.);
+     }
+  if (canvasName.Contains("LepPtPlusHTover2_Zinc")){
+          hSyst->GetXaxis()->SetRangeUser(30,900);
+          hSyst->GetYaxis()->SetRangeUser(minimum, maximum*100.);
+      }
+  if (canvasName.Contains("LepPtPlusHTover3_Zinc")){
+            hSyst->GetXaxis()->SetRangeUser(30,900);
+           hSyst->GetYaxis()->SetRangeUser(minimum, maximum*100.);
+       }
+  if (canvasName.Contains("LepPtPlusLeadingJetPt_Zinc")){
+           hSyst->GetXaxis()->SetRangeUser(30,900);
+           hSyst->GetYaxis()->SetRangeUser(minimum, maximum*100.);
+       }
     if (canvasName.Contains("JetAbsRapidity_Zinc1jet")) {
         hSyst->GetYaxis()->SetRangeUser(0.2, 1.5*maximum);
     }
@@ -831,24 +863,24 @@ TCanvas* makeCrossSectionPlot(TString lepSel, TString variable, bool doNormalize
     if (canvasName.Contains("JetAbsRapidity_Zinc4jet")) {
         hSyst->GetYaxis()->SetRangeUser(0.1, 1.8*maximum);
     }
-    if (canvasName.Contains("HT_Zinc1jet")) {
-        //hSyst->GetXaxis()->SetRangeUser(hSyst->GetXaxis()->GetXmin(), 1000);
-        hSyst->GetXaxis()->SetRangeUser(30, 1500);
-        hSyst->GetYaxis()->SetRangeUser(0.15*minimum, 1.8*maximum);
-    }
-    if (canvasName.Contains("HT_Zinc2jet")) {
-        hSyst->GetXaxis()->SetRangeUser(60, 1200);
-        hSyst->GetYaxis()->SetRangeUser(0.15*minimum, 1.8*maximum);
-    }
-    if (canvasName.Contains("HT_Zinc3jet")) {
-        hSyst->GetXaxis()->SetRangeUser(118, 1100);
-        hSyst->GetYaxis()->SetRangeUser(0.15*minimum, 1.8*maximum);
-        hSyst->GetXaxis()->SetNdivisions(509);  //Default is 510 //Needed to remove an overlap for the labels, can be removed later on!
-    }
-    if (canvasName.Contains("HT_Zinc4jet")) {
-        hSyst->GetXaxis()->SetRangeUser(203, 910);
-        hSyst->GetYaxis()->SetRangeUser(0.28*minimum, 3.4*maximum);
-    }
+ //   if (canvasName.Contains("HT_Zinc1jet")) {
+ //       //hSyst->GetXaxis()->SetRangeUser(hSyst->GetXaxis()->GetXmin(), 1000);
+ //       hSyst->GetXaxis()->SetRangeUser(30, 1500);
+ //       hSyst->GetYaxis()->SetRangeUser(0.15*minimum, 1.8*maximum);
+ //   }
+ //   if (canvasName.Contains("HT_Zinc2jet")) {
+ //       hSyst->GetXaxis()->SetRangeUser(60, 1200);
+ //       hSyst->GetYaxis()->SetRangeUser(0.15*minimum, 1.8*maximum);
+ //   }
+ //   if (canvasName.Contains("HT_Zinc3jet")) {
+ //       hSyst->GetXaxis()->SetRangeUser(118, 1100);
+ //       hSyst->GetYaxis()->SetRangeUser(0.15*minimum, 1.8*maximum);
+ //       hSyst->GetXaxis()->SetNdivisions(509);  //Default is 510 //Needed to remove an overlap for the labels, can be removed later on!
+ //   }
+ //   if (canvasName.Contains("HT_Zinc4jet")) {
+ //       hSyst->GetXaxis()->SetRangeUser(203, 910);
+ //       hSyst->GetYaxis()->SetRangeUser(0.28*minimum, 3.4*maximum);
+ //   }
     if (canvasName.Contains("DPhi")) {
         hSyst->GetYaxis()->SetRangeUser(0.2*minimum, 1.5*maximum);
     }
@@ -898,10 +930,10 @@ TCanvas* makeCrossSectionPlot(TString lepSel, TString variable, bool doNormalize
     latexLabel->SetLineWidth(2);
     latexLabel->SetTextFont(61);
     if (canvasName.Contains("dPhiLepJet1")){
-    latexLabel->DrawLatex(0.18,0.23,"CMS");
+    latexLabel->DrawLatex(0.18,0.23,"CMS Prelim.");
     }
     else{
-    latexLabel->DrawLatex(0.18,0.25,"CMS");
+    latexLabel->DrawLatex(0.18,0.25,"CMS Prelim.");
     }
 
     //latexLabel->SetTextSize(0.036);
@@ -920,7 +952,11 @@ TCanvas* makeCrossSectionPlot(TString lepSel, TString variable, bool doNormalize
     latexLabel->SetLineWidth(2);
     latexLabel->SetTextFont(42);
     //if(integratedLumi > 0) latexLabel->DrawLatex(0.15,0.90, TString("%.3g fb^{-1} (13 TeV)", integratedLumi));
-    latexLabel->DrawLatex(0.13,0.90,"2.2 fb^{-1} (13 TeV)");
+    
+    //andrew -- 2016 13 TeV data
+    latexLabel->DrawLatex(0.13,0.90,"35.9 fb^{-1} (13 TeV)");
+    //latexLabel->DrawLatex(0.13,0.90,"2.2 fb^{-1} (13 TeV)");
+
     latexLabel->DrawLatex(0.18,0.21-0.03,"anti-k_{T} (R = 0.4) Jets");
 
     if (canvasName.Contains("FirstJetPt50")){
@@ -987,7 +1023,6 @@ TCanvas* makeCrossSectionPlot(TString lepSel, TString variable, bool doNormalize
     }
     latexLabel->SetName("latexLabel");
     latexLabel->Draw("same");
-
 
     TLatex *ytitle = new TLatex();
     ytitle->SetName("ytitle");

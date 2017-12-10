@@ -113,12 +113,12 @@ void getFiles(TString histoDir, TFile *Files[], TString lepSel, TString energy, 
 //        Syst.push_back("5_Up");      // 5 up: LES up
 //        Syst.push_back("5_Down");    // 5 down: LES down
 //    };
-    
-//    if (Name.Index("Data") >= 0 || Name.Index("data") >= 0 || Name.Index("DATA") >= 0) { // for data we have:
-//        Syst.push_back("0");                 //   0: central
-//        Syst.push_back("2_Up");              //   2 up: JES up
-//        Syst.push_back("2_Down");            //   2 down: JES down
-//    }
+    //andrew -- just working with JES uncertainties right now (these are only applied on data) -- 7.12.2017
+    if (Name.Index("Data") >= 0 || Name.Index("data") >= 0 || Name.Index("DATA") >= 0) { // for data we have:
+        Syst.push_back("0");                 //   0: central
+        Syst.push_back("2_Up");              //   2 up: JES up
+        Syst.push_back("2_Down");            //   2 down: JES down
+    }
 //    else if (Name.Index("UNFOLDING") >= 0 && /*Name.Index("DYJets") >= 0 &&*/ Name.Index("Tau") < 0) {
 //        // for DYJets in case of Z+Jets or for WJets in case of W+Jets analysis we have:
 //        Syst.push_back("0");         // 0: central
@@ -148,11 +148,11 @@ void getFiles(TString histoDir, TFile *Files[], TString lepSel, TString energy, 
 
     
     
-    if (Name.Index("Data") >= 0) { // for data we have:
-        Syst.push_back("0");                 //   0: central
-        Syst.push_back("0");              //   2 up: JES up
-        Syst.push_back("0");            //   2 down: JES down
-    }
+//    if (Name.Index("Data") >= 0) { // for data we have:
+//        Syst.push_back("0");                 //   0: central
+//        Syst.push_back("0");              //   2 up: JES up
+//        Syst.push_back("0");            //   2 down: JES down
+//    }
     else if (Name.Index("UNFOLDING") >= 0 && /*Name.Index("DYJets") >= 0 &&*/ Name.Index("Tau") < 0) {
         // for DYJets in case of Z+Jets or for WJets in case of W+Jets analysis we have:
         Syst.push_back("0");         // 0: central
@@ -323,6 +323,9 @@ TH1D* getHisto(TFile *File, const TString variable)
     //---- ttbar scaling (starts here) ----------------------------------------------------------
 	TString fileName = gSystem->BaseName(File->GetName());
 	bool isTTbar = (fileName.Index("SMu_13TeV_TT") >= 0);
+
+        //andrew -- no TTbar scale factors yet derived for 2016 data -- 7.12.2017
+        isTTbar = false;
 	if (isTTbar){
 		if (variable.Index("Zinc2jet") >= 0) histo->Scale(1.00624717);
 		else if (variable.Index("Zinc3jet") >= 0) histo->Scale(0.95995655);
@@ -396,7 +399,8 @@ void getHistos(TH1D *histograms[], TFile *Files[], TString variable)
         histograms[i] = (TH1D*) Files[i]->Get(variable);	
 
     //---- ttbar scaling (starts here) ----------------------------------------------------------
-
+                //andrew -- no TTbar SFs yet derived for 2016 data -- 7.12.2017
+                isTTbar = false;
 		if (isTTbar){
 			if (variable.Index("Zinc2jet") >= 0) histograms[i]->Scale(1.00624717);
 			else if (variable.Index("Zinc3jet") >= 0) histograms[i]->Scale(0.95995655);

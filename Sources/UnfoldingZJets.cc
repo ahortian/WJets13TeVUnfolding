@@ -376,7 +376,7 @@ void UnfoldingZJets(TString lepSel, TString algo, TString histoDir, TString unfo
 
       TH1D *hMadGenCrossSection = makeCrossSectionHist(hGenDYJets[0], integratedLumi);
       //andrew -- need to double check that this is pulling from the wjets source MC that's listed in the Samples structure in fileNamesZJets.h
-      hMadGenCrossSection->SetZTitle("MG_aMC FxFx + PY8 (#leq 2j NLO + PS) - ???");
+      hMadGenCrossSection->SetZTitle("MG_aMC FxFx + PY8 (#leq 2j NLO + PS)");
     TH1D *hGen1CrossSection = makeCrossSectionHist(hGen1, integratedLumi);
       //andrew -- this should be the wjets signal mc mlm
       hGen1CrossSection->SetZTitle(generatorNames[gen1][1]);
